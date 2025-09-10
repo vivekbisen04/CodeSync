@@ -4,13 +4,13 @@ import { cache } from '@/lib/redis';
 
 export async function GET(request: NextRequest) {
   try {
-    // Check cache first
-    const cacheKey = 'explore:page:data';
-    const cachedData = await cache.get<any>(cacheKey);
+    // Skip cache in production to ensure fresh data
+    // const cacheKey = 'explore:page:data';
+    // const cachedData = await cache.get<any>(cacheKey);
     
-    if (cachedData) {
-      return NextResponse.json(cachedData);
-    }
+    // if (cachedData) {
+    //   return NextResponse.json(cachedData);
+    // }
 
     // Fetch all public snippets with author and counts
     const snippets = await prisma.snippet.findMany({
@@ -96,10 +96,14 @@ export async function GET(request: NextRequest) {
       totalCount,
     };
 
-    // Cache the data for 10 minutes
-    await cache.set(cacheKey, responseData, 600);
+    // Skip caching in production to ensure fresh data
+    // await cache.set(cacheKey, responseData, 600);
 
-    return NextResponse.json(responseData);
+    return NextResponse.json(responseData, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   } catch (error) {
     console.error('Explore API error:', error);
     return NextResponse.json(

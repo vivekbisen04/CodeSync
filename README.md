@@ -1,43 +1,64 @@
 # CodeSync 🚀
 
-A real-time social coding platform for developers to share, discover, and collaborate on code snippets.
+A modern social coding platform for developers to share, discover, and collaborate on code snippets with real-time features.
 
-## Features
+## 🌐 Live Demo
 
-- 🔐 **Authentication** - Secure auth with NextAuth.js (GitHub, Google, Credentials)
-- 👨‍💻 **Code Sharing** - Share and discover code snippets
-- 💬 **Social Features** - Comments, likes, follows
-- 🎨 **Syntax Highlighting** - Support for 20+ programming languages
-- 🌐 **Real-time Updates** - Socket.IO for live collaboration
-- 📱 **Responsive Design** - Beautiful UI with Tailwind CSS
-- 🔍 **Search & Filter** - Find snippets by language, tags, or content
-- 📊 **Analytics** - Track views, likes, and engagement
+**[https://codesync-phi.vercel.app/](https://codesync-phi.vercel.app/)**
 
-## Tech Stack
+> Experience CodeSync live! Create an account and start sharing your code snippets with the community.
 
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: NextAuth.js
-- **Cache**: Redis
-- **Real-time**: Socket.IO
-- **UI Components**: Custom components with Radix UI
+## ✨ Features
+
+- 🔐 **Multi-Provider Authentication** - Secure login with NextAuth.js supporting Google OAuth and email/password
+- 👨‍💻 **Code Sharing & Management** - Create, edit, and organize code snippets with rich metadata
+- 💬 **Social Interactions** - Like, comment, and follow other developers
+- 🎨 **Monaco Editor Integration** - VS Code-like editing experience with syntax highlighting
+- 📱 **Responsive Design** - Beautiful, modern UI built with Tailwind CSS and Shadcn/ui
+- 🔍 **Advanced Search** - Filter snippets by language, tags, and content
+- 👤 **User Profiles** - Customizable profiles with bio, social links, and snippet showcase
+- 🏷️ **Smart Tagging** - Organize and discover content with trending tags
+- 📊 **Engagement Analytics** - Track snippet views, likes, and comments
+- 🌙 **Dark/Light Theme** - User preference-based theme switching
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: Next.js 14 with App Router & TypeScript
+- **Styling**: Tailwind CSS + Shadcn/ui components
+- **Code Editor**: Monaco Editor (VS Code editor)
+- **State Management**: React Context & Server State
 - **Forms**: React Hook Form with Zod validation
-- **Deployment**: Docker & Docker Compose
+- **Theme**: Next-themes for dark/light mode
 
-## Quick Start
+### Backend
+- **API**: Next.js API Routes (RESTful)
+- **Database**: Neon PostgreSQL (Serverless)
+- **ORM**: Prisma with TypeScript
+- **Authentication**: NextAuth.js with JWT
+- **File Upload**: Cloudinary integration
+- **Validation**: Zod schemas
+
+### Deployment & DevOps
+- **Platform**: Vercel (Serverless deployment)
+- **Database**: Neon PostgreSQL (No cold starts)
+- **CDN**: Vercel Edge Network
+- **CI/CD**: Vercel Git integration
+- **Analytics**: Built-in engagement tracking
+
+## 🚀 Local Development Setup
 
 ### Prerequisites
 
 - Node.js 18+ 
-- Docker & Docker Compose
 - Git
+- A Neon PostgreSQL database (free tier)
+- Cloudinary account (optional, for image uploads)
 
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/vivekbisen04/Codesync.git
 cd codesync
 ```
 
@@ -49,24 +70,32 @@ npm install
 
 ### 3. Setup environment variables
 
-```bash
-cp .env.example .env
-```
-
-Update `.env` with your configuration:
+Create a `.env` file in the root directory:
 
 ```env
-DATABASE_URL="postgresql://codesync_user:codesync_password@localhost:5432/codesync"
-NEXTAUTH_SECRET="your-super-secret-key-here"
-NEXTAUTH_URL="http://localhost:3000"
-REDIS_URL="redis://:codesync_redis_password@localhost:6379"
+# Database (Get from Neon Console)
+DATABASE_URL="postgresql://username:password@host/database?sslmode=require"
+DIRECT_URL="postgresql://username:password@host/database?sslmode=require"
 
-# OAuth providers (optional)
-GITHUB_CLIENT_ID="your-github-client-id"
-GITHUB_CLIENT_SECRET="your-github-client-secret"
-GOOGLE_CLIENT_ID="your-google-client-id"  
+# NextAuth (Generate a random secret)
+NEXTAUTH_SECRET="your-super-secret-key-here-32-chars-min"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Google OAuth (Get from Google Cloud Console)
+GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
+NEXT_PUBLIC_GOOGLE_ENABLED=true
+
+# Cloudinary (Optional - for profile image uploads)
+CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
+CLOUDINARY_API_KEY="your-cloudinary-api-key"
+CLOUDINARY_API_SECRET="your-cloudinary-api-secret"
 ```
+
+> **Setup Guides:**
+> - [Neon Database Setup](https://neon.tech) - Create free PostgreSQL database
+> - [Google OAuth Setup](https://console.cloud.google.com) - Enable Google login
+> - [Cloudinary Setup](https://cloudinary.com) - For image uploads (optional)
 
 ### 4. Start the database services
 
@@ -162,22 +191,4 @@ The app uses PostgreSQL with the following main entities:
 | `/api/users` | GET, PUT | User operations |
 | `/api/comments` | GET, POST | Comment operations |
 
-## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-If you have any questions or run into issues, please [open an issue](https://github.com/your-username/codesync/issues) on GitHub.
-
----
-
-Built with ❤️ by the CodeSync team
