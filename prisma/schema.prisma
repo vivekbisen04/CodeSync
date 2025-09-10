@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  cloudinaryPublicId String? @map("cloudinary_public_id")
+  username      String?   @unique
+  password      String?
+  bio           String?
+  location      String?
+  website       String?
+  githubUrl     String?   @map("github_url")
+  twitterUrl    String?   @map("twitter_url")
+  isVerified    Boolean   @default(false) @map("is_verified")
+  
+  // User preferences
+  theme                       String?  @default("system")
+  language                    String?  @default("en")
+  defaultSnippetVisibility    String?  @default("public") @map("default_snippet_visibility")
+  showEmail                   Boolean  @default(false) @map("show_email")
+  showLocation                Boolean  @default(true) @map("show_location")
+  
+  accounts Account[]
+  sessions Session[]
+  snippets Snippet[]
+  comments Comment[]
+  likes    Like[]
+  followers Follow[] @relation("UserFollowers")
+  following Follow[] @relation("UserFollowing")
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Snippet {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  content     String   @db.Text
+  language    String
+  isPublic    Boolean  @default(true) @map("is_public")
+  tags        String[]
+  
+  authorId    String   @map("author_id")
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  comments    Comment[]
+  likes       Like[]
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("snippets")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  
+  snippetId String   @map("snippet_id")
+  snippet   Snippet  @relation(fields: [snippetId], references: [id], onDelete: Cascade)
+  
+  authorId  String   @map("author_id")
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  parentId  String?  @map("parent_id")
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("comments")
+}
+
+model Like {
+  id        String  @id @default(cuid())
+  
+  userId    String  @map("user_id")
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  snippetId String  @map("snippet_id")
+  snippet   Snippet @relation(fields: [snippetId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, snippetId])
+  @@map("likes")
+}
+
+model Follow {
+  id          String @id @default(cuid())
+  
+  followerId  String @map("follower_id")
+  follower    User   @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  
+  followingId String @map("following_id")
+  following   User   @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([followerId, followingId])
+  @@map("follows")
+}
