@@ -97,28 +97,20 @@ CLOUDINARY_API_SECRET="your-cloudinary-api-secret"
 > - [Google OAuth Setup](https://console.cloud.google.com) - Enable Google login
 > - [Cloudinary Setup](https://cloudinary.com) - For image uploads (optional)
 
-### 4. Start the database services
-
-```bash
-npm run docker:dev
-```
-
-This starts PostgreSQL and Redis containers in the background.
-
-### 5. Setup the database
+### 4. Setup the database
 
 ```bash
 # Generate Prisma client
-npm run db:generate
+npx prisma generate
 
-# Push the schema to the database
-npm run db:push
+# Push the schema to your Neon database
+npx prisma db push
 
-# Seed the database with sample data (optional)
+# (Optional) Seed with sample data
 npm run db:seed
 ```
 
-### 6. Start the development server
+### 5. Start the development server
 
 ```bash
 npm run dev
@@ -126,7 +118,7 @@ npm run dev
 
 🎉 **Your app is now running at [http://localhost:3000](http://localhost:3000)!**
 
-## Development Scripts
+## 📋 Available Scripts
 
 | Command | Description |
 |---------|-------------|
@@ -134,40 +126,35 @@ npm run dev
 | `npm run build` | Build for production |
 | `npm run start` | Start production server |
 | `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint issues |
 | `npm run type-check` | Check TypeScript types |
-| `npm run format` | Format code with Prettier |
-| `npm run db:generate` | Generate Prisma client |
-| `npm run db:push` | Push schema to database |
+| `npx prisma generate` | Generate Prisma client |
+| `npx prisma db push` | Push schema to database |
+| `npx prisma studio` | Open Prisma Studio |
 | `npm run db:seed` | Seed database with sample data |
-| `npm run db:studio` | Open Prisma Studio |
-| `npm run docker:dev` | Start Docker services |
-| `npm run docker:down` | Stop Docker services |
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 codesync/
 ├── app/                    # Next.js 14 app router
 │   ├── (auth)/            # Authentication pages
+│   ├── (dashboard)/       # Protected dashboard pages
 │   ├── api/               # API routes
-│   ├── dashboard/         # Dashboard pages
-│   └── snippet/           # Snippet pages
+│   ├── snippet/           # Individual snippet pages
+│   └── globals.css        # Global styles
 ├── components/            # React components
-│   ├── auth/              # Authentication components
+│   ├── auth/              # Authentication forms
 │   ├── layout/            # Layout components
 │   ├── providers/         # Context providers
-│   ├── snippets/          # Snippet components
-│   └── ui/                # UI components
+│   └── ui/                # Reusable UI components
 ├── hooks/                 # Custom React hooks
 ├── lib/                   # Utility libraries
 │   ├── auth.ts            # NextAuth configuration
 │   ├── db.ts              # Prisma client
-│   ├── redis.ts           # Redis client
 │   ├── utils.ts           # Helper functions
 │   └── validations.ts     # Zod schemas
-├── prisma/                # Database schema and migrations
-├── types/                 # TypeScript type definitions
+├── prisma/                # Database schema
+├── types/                 # TypeScript definitions
 └── public/                # Static assets
 ```
 
@@ -181,14 +168,73 @@ The app uses PostgreSQL with the following main entities:
 - **Likes** - User likes on snippets
 - **Follows** - User follow relationships
 
-## API Routes
+## 🔗 API Endpoints
 
 | Route | Method | Description |
 |-------|--------|-------------|
-| `/api/auth/*` | * | NextAuth endpoints |
+| `/api/auth/*` | * | NextAuth.js endpoints |
 | `/api/snippets` | GET, POST | List and create snippets |
-| `/api/snippets/[id]` | GET, PUT, DELETE | Snippet CRUD |
-| `/api/users` | GET, PUT | User operations |
-| `/api/comments` | GET, POST | Comment operations |
+| `/api/snippets/[id]` | GET, PUT, DELETE | Snippet CRUD operations |
+| `/api/snippets/[id]/like` | POST, DELETE | Like/unlike snippets |
+| `/api/snippets/[id]/comments` | GET, POST | Snippet comments |
+| `/api/snippets/explore` | GET | Explore public snippets |
+| `/api/snippets/my-snippets` | GET | User's own snippets |
+| `/api/users` | GET | List users |
+| `/api/users/[username]` | GET | User profile |
+| `/api/users/[username]/follow` | POST, DELETE | Follow/unfollow users |
+| `/api/profile` | GET, PUT | Current user profile |
 
+## 🚀 Deployment
 
+This project is optimized for deployment on Vercel with Neon PostgreSQL:
+
+1. **Fork this repository**
+2. **Import to Vercel** - Connect your GitHub account
+3. **Add environment variables** - Copy from your local `.env`
+4. **Deploy** - Vercel will automatically build and deploy
+
+### Production Environment Variables
+
+```env
+DATABASE_URL="your-neon-database-url"
+DIRECT_URL="your-neon-direct-url"
+NEXTAUTH_SECRET="your-production-secret"
+NEXTAUTH_URL="https://your-domain.vercel.app"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) - The React framework
+- [Prisma](https://prisma.io/) - Database toolkit
+- [NextAuth.js](https://next-auth.js.org/) - Authentication
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [Shadcn/ui](https://ui.shadcn.com/) - UI components
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/) - Code editor
+- [Neon](https://neon.tech/) - Serverless PostgreSQL
+
+---
+
+<div align="center">
+  <p>Built with ❤️ by <a href="https://github.com/vivekbisen04">Vivek Bisen</a></p>
+  <p>
+    <a href="https://codesync-phi.vercel.app/">Live Demo</a> |
+    <a href="https://github.com/vivekbisen04/Codesync/issues">Report Bug</a> |
+    <a href="https://github.com/vivekbisen04/Codesync/issues">Request Feature</a>
+  </p>
+</div>
